@@ -1,6 +1,6 @@
 package jsonObject;
 
-public class Data {
+public class DataCStick {
 
 	private long tUnixTimestamp;
 	private float open;

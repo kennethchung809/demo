@@ -73,7 +73,7 @@ public class App {
     		
     	System.out.println("Kenneth jsonString result: "+jsonString);
     	
-    	CandleStick candleStick = app.jsonObjectFactory(ParamAPIMethod.CandleStick, jsonString);
+    	CandleStick candleStick = app.jsonObjectFactoryCS(ParamAPIMethod.CandleStick, jsonString);
     	
     	//System.out.println("candleStick: "+candleStick);
     	
@@ -98,13 +98,111 @@ public class App {
     	
     	//#####################
     	
+    	System.out.println("#####################################################################################################################################################");
+       	System.out.println("#####################################################################################################################################################");
+        
+       	System.out.println("#####################################################################################################################################################");
+       	System.out.println("#####################################################################################################################################################");
+        
+       	
     	jsonString = app.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.Trades);
     	
     	
     	
-    	//Trade trades= app.jsonObjectFactory(ParamAPIMethod.Trades);
+    	jsonString=" \n 	{"
+    			+ "\n"
+    			+ "    		\"code\":0,\n"
+    			+ "    		\"method\":\"public/get-trades\",\n"
+    			+ "    		\"result\":{\n"
+    			+ "    			\"instrument_name\":\"BTC_USDT\",\n"
+    			+ "    			\"data\":[\n"
+    			+ "	    			        {\"dataTime\":1648193897705,\"d\":2360792450652095328,\"s\":\"BUY\",\"p\":44019.81,\"q\":0.014922,\"t\":1648193897704,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193896136,\"d\":2360792397982209056,\"s\":\"SELL\",\"p\":44022.43,\"q\":0.000005,\"t\":1648193896135,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193896136,\"d\":2360792397979767552,\"s\":\"SELL\",\"p\":44022.43,\"q\":0.001334,\"t\":1648193896135,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193896125,\"d\":2360792397653748256,\"s\":\"SELL\",\"p\":44022.43,\"q\":0.001334,\"t\":1648193896125,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193896124,\"d\":2360792397607909120,\"s\":\"SELL\",\"p\":44022.43,\"q\":0.002669,\"t\":1648193896123,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193896124,\"d\":2360792397607695552,\"s\":\"SELL\",\"p\":44022.43,\"q\":0.005339,\"t\":1648193896123,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648193886559,\"d\":2360792076676092352,\"s\":\"BUY\",\"p\":44022.80,\"q\":0.001334,\"t\":1648193886559,\"i\":\"BTC_USDT\"}\n"
+    			+ "    			       ]\n"
+    			+ "    	        }\n"
+    			+ "    	}\n"
+    			+ "";
+    	
+
+    
+    	
+    	
+    	 System.out.println("Trade json string: "+jsonString);
+    	  	
+    	
+    	 
+    	Trade trade = app.jsonObjectFactoryTrade(ParamAPIMethod.Trades, jsonString);
     	
     }
+  
+    /**
+     * 
+     * 
+     * 
+     * */
+    
+    
+    public String getJsonObjectString(String instrument, String method) {
+    	String jsonResult="";
+ 
+        
+  	  try {
+
+  		// URL url = new URL("https://api.crypto.com/v2/public/get-ticker?instrument_name=BTC_USDT");
+  		//URL url = new URL("https://api.crypto.com/v2/public/get-candlestick?instrument_name=BTC_USDT&timeframe=5m");
+  		URL url = new URL("https://api.crypto.com/v2/public/get-"+method+"?instrument_name="+instrument);
+
+  		//System.out.println("Trade URL: "+url);
+  				
+  		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+  		conn.setRequestMethod("GET");
+  		conn.setRequestProperty("Accept", "application/json");
+
+  		if (conn.getResponseCode() != 200) {
+  			throw new RuntimeException("Failed : HTTP error code : "
+  					+ conn.getResponseCode());
+  		}
+
+  		BufferedReader br = new BufferedReader(new InputStreamReader(
+  			(conn.getInputStream())));
+
+  		String output;
+  		System.out.println("Output Trade from Server .... \n");
+  		while ((output = br.readLine()) != null) {
+  			
+  			jsonResult = jsonResult +output;
+  			
+  		}
+
+
+  		System.out.println("\n");
+  		
+  		
+  		conn.disconnect();
+
+		
+		
+  	  } catch (MalformedURLException e) {
+
+  		e.printStackTrace();
+
+  	  } catch (IOException e) {
+
+  		e.printStackTrace();
+
+  	  }
+
+    	return jsonResult;
+    	
+    }
+    
+    
+    
     
     /**
      * 
@@ -173,7 +271,7 @@ public class App {
      * 
      * */
     
-    public CandleStick jsonObjectFactory(String method, String jsonString) {
+    public CandleStick jsonObjectFactoryCS(String method, String jsonString) {
     	
     	CandleStick candleStick = new CandleStick();
     	JsonObject dataObj;
@@ -205,13 +303,13 @@ public class App {
     		System.out.println("candleStick.getInstrumentName(): "+candleStick.getInstrumentName()+"\n");
     		
     		candleStick.setInstrumentName(result.get("interval").getAsString());;
-    		System.out.println("candleStick.getInstrumentName(): "+candleStick.getInstrumentName()+"\n");
+    		System.out.println("candleStick.getInterval(): "+candleStick.getInterval() + "\n");
     		
     		
     		JsonArray dataArray = result.getAsJsonArray("data");
     		
     		
-    		Vector<Data> dataSet= new Vector<>();
+    		Vector<DataCStick> dataSet= new Vector<>();
     		
     		for (JsonElement d : dataArray) {
     			
@@ -233,7 +331,7 @@ public class App {
     			 );
     			 
     			
-    			Data data = new Data();
+    			DataCStick data = new DataCStick();
     			
     			data.settUnixTimestamp(tUnixTimestamp);
     			data.setOpen(open);
@@ -269,4 +367,104 @@ public class App {
     	return candleStick;
     }
  
+    
+    
+    
+    
+    /**
+     * 
+     * */
+    
+    public Trade jsonObjectFactoryTrade(String method, String jsonString) {
+    	
+    	Trade trade = new Trade();
+    	JsonObject dataObj;
+
+    	 float pTradePrice;
+    	 float qTradeQty;
+    	 String sSide;
+    	 float dTradeID;
+    	 float tTradeTimeStamp;
+    	
+    	if (ParamAPIMethod.Trades.equals(method)){
+    		
+    		System.out.println("********** Generating Trade object");
+    		
+    		
+    		Gson gson = new Gson();
+    		
+    		//get json object from the json string
+    		JsonObject tradeJsonObject = gson.fromJson(jsonString, JsonObject.class);
+    
+    		trade.setMethod(tradeJsonObject.get("method").getAsString());
+    		System.out.println("result: "+trade.getMethod()+"\n");
+    		
+    		
+
+    		JsonObject result = tradeJsonObject.getAsJsonObject("result");
+    		
+    		trade.setInstrumentName(result.get("instrument_name").getAsString());;
+    		System.out.println("trade.getInstrumentName(): "+trade.getInstrumentName()+"\n");
+    	
+    		
+    		JsonArray dataArray = result.getAsJsonArray("data");
+    		
+    		
+    		Vector<DataTrade> dataSet= new Vector<>();
+    		
+    		for (JsonElement d : dataArray) {
+    		
+    			
+    			/*
+    			p	number	Trade price
+    			q	number	Trade quantity
+    			s	string	Side ("buy" or "sell")
+    			d	number	Trade ID
+    			t	number	Trade timestamp
+    			dataTime	long	Reserved. Can be ignored
+    			
+    			*/
+    			
+    			
+    			
+    		    dataObj = d.getAsJsonObject();
+    			
+    			pTradePrice = dataObj.get("p").getAsFloat();
+    			qTradeQty = dataObj.get("q").getAsFloat();
+    			sSide = dataObj.get("s").getAsString();
+    			dTradeID = dataObj.get("d").getAsFloat();
+    			tTradeTimeStamp = dataObj.get("t").getAsFloat();
+
+    			 
+    			 System.out.println(
+    					 pTradePrice + " @ " +
+    							 qTradeQty + " @ " +
+    							 sSide+ " @ " +
+    							 dTradeID + " @ " +
+    							 tTradeTimeStamp + " @ " 
+    			 );
+    			 
+    			
+    			 
+    			DataTrade data = new DataTrade();
+    		
+    			data.setpTradePrice(pTradePrice);
+    			data.setqTradeQty(qTradeQty);
+    			data.setsSide(sSide);
+    			data.setdTradeID(dTradeID);
+    			data.settTradeTimeStamp(tTradeTimeStamp);
+    			 
+    			dataSet.add(data);
+    		}
+    			
+    		trade.setDataSet(dataSet);
+    		
+    		
+    		System.out.println("trade.getDataSet().get(0).gettTradeTimeStamp: "+trade.getDataSet().get(0).gettTradeTimeStamp());
+
+    		
+    	}
+  		
+    	return trade;
+    }
 }

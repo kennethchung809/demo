@@ -1,13 +1,38 @@
 package jsonObject;
 
-public class Trade {
+import java.util.Vector;
+
+public class Trade  {
+
 
 	private float pTradePrice;
 	private float qTradeQty;
 	private String sSide;
 	private float dTradeID;
 	private float tTradeTimeStamp;
-	
+	private String method;
+	private String instrumentName;
+    private Vector<DataTrade> dataSet;
+
+    
+	public Vector<DataTrade> getDataSet() {
+		return dataSet;
+	}
+	public void setDataSet(Vector<DataTrade> dataSet) {
+		this.dataSet = dataSet;
+	}
+	public String getInstrumentName() {
+		return instrumentName;
+	}
+	public void setInstrumentName(String instrumentName) {
+		this.instrumentName = instrumentName;
+	}
+	public String getMethod() {
+		return method;
+	}
+	public void setMethod(String method) {
+		this.method = method;
+	}
 	public float getpTradePrice() {
 		return pTradePrice;
 	}

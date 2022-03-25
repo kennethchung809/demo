@@ -5,21 +5,20 @@ import java.util.Set;
 import java.util.Vector;
 
 
-public class CandleStick {
+public class CandleStick{
 
 	private String code ;
 	private String method;
 	private String instrumentName;
 	private String interval;
-    private Vector<Data> dataSet;
+    private Vector<DataCStick> dataSet;
 
-   
+
     
-    
-	public Vector<Data> getDataSet() {
+	public Vector<DataCStick> getDataSet() {
 		return dataSet;
 	}
-	public void setDataSet(Vector<Data> dataSet) {
+	public void setDataSet(Vector<DataCStick> dataSet) {
 		this.dataSet = dataSet;
 	}
 	public String getCode() {

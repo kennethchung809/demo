@@ -3,6 +3,12 @@
  */
 package demo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map.Entry;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,33 +20,110 @@ import org.joda.time.LocalTime;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import demo.param.ParamAPIMethod;
+
 import com.google.gson.JsonElement;
 import com.google.gson.*;
 import java.util.*;
-
+import demo.param.*;
+import jsonObject.*;
 
 public class App {
-	private static String jsonResult ="";
+	
     public String getGreeting() {
+    	
         return "Hello World!";
     }
-
+	
     public static void main(String[] args) {
+    	     
+    	 System.out.println(new App().getGreeting());
+    	 
+    	 String jsonString ;
+    	 
+    	 
+    	App app = new App();
+    	
+    	jsonString = app.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.CandleStick, ParamPeriod.OneMinutes);
     	
     	
-        System.out.println(new App().getGreeting());
-        
-        LocalTime currentTime = new LocalTime();
-        System.out.println("The current local time is: " + currentTime);
-        
-   
-        
-        
-        
+    	// temporarily for testing short period of time
+    	jsonString = "    	{\"code\":0,\n"
+    			+ "    		\"method\":\"public/get-candlestick\",\n"
+    			+ "    		\"result\":{\n"
+    			+ "	    		\"instrument_name\":\"BTC_USDT\",\n"
+    			+ "	    		\"depth\":1000,\n"
+    			+ "	    		\"interval\":\"1m\",\n"
+    			+ "	    		\"data\":[\n"
+    			+ "	    		        {\"t\":1648149900000,\"o\":44058.31,\"h\":44071.52,\"l\":44034.06,\"c\":44049.17,\"v\":33.111505},\n"
+    			+ "	    		        {\"t\":1648149960000,\"o\":44049.59,\"h\":44062.63,\"l\":44046.69,\"c\":44057.0,\"v\":23.320554},\n"
+    			+ "	    		        {\"t\":1648150020000,\"o\":44056.72,\"h\":44081.88,\"l\":44040.3,\"c\":44058.94,\"v\":27.735342},\n"
+    			+ "	    		        {\"t\":1648150080000,\"o\":44058.95,\"h\":44063.66,\"l\":44042.34,\"c\":44051.84,\"v\":26.162624},\n"
+    			+ "	    		        {\"t\":1648150140000,\"o\":44053.39,\"h\":44070.42,\"l\":44053.03,\"c\":44063.27,\"v\":20.133888},\n"
+    			+ "	    		        {\"t\":1648185840000,\"o\":44031.13,\"h\":44043.03,\"l\":44027.89,\"c\":44030.74,\"v\":11.307559}\n"
+    			+ "	    		       ]\n"
+    			+ "    		}\n"
+    			+ "    	\n"
+    			+ "    	}";
+    	
+    	
+
+
+    		
+    	System.out.println("Kenneth jsonString result: "+jsonString);
+    	
+    	CandleStick candleStick = app.jsonObjectFactory(ParamAPIMethod.CandleStick, jsonString);
+    	
+    	//System.out.println("candleStick: "+candleStick);
+    	
+    	/*
+		{
+		  "code":0,
+		  "method":"public/get-candlestick",
+		  "result":{
+		    "instrument_name":"BTC_USDT",
+		    "interval":"5m",
+		    "data":[
+		      {"t":1596944700000,"o":11752.38,"h":11754.77,"l":11746.65,"c":11753.64,"v":3.694583},
+		      {"t":1596945000000,"o":11753.63,"h":11754.77,"l":11739.83,"c":11746.17,"v":2.073019},
+		      {"t":1596945300000,"o":11746.16,"h":11753.24,"l":11738.1,"c":11740.65,"v":0.867247},
+		      ...
+		    ]
+		  }
+		}
+
+    	 */
+
+    	
+    	//#####################
+    	
+    	jsonString = app.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.Trades);
+    	
+    	
+    	
+    	//Trade trades= app.jsonObjectFactory(ParamAPIMethod.Trades);
+    	
+    }
+    
+    /**
+     * 
+     * 
+     * 
+     * */
+    
+    
+    public String getJsonObjectString(String instrument, String method, String period) {
+    	String jsonResult="";
+ 
         
   	  try {
 
-  		URL url = new URL("https://api.crypto.com/v2/public/get-ticker?instrument_name=BTC_USDT");
+  		// URL url = new URL("https://api.crypto.com/v2/public/get-ticker?instrument_name=BTC_USDT");
+  		//URL url = new URL("https://api.crypto.com/v2/public/get-candlestick?instrument_name=BTC_USDT&timeframe=5m");
+  		URL url = new URL("https://api.crypto.com/v2/public/get-"+method+"?instrument_name="+instrument+"&timeframe="+period);
+
+  				
   		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
   		conn.setRequestMethod("GET");
   		conn.setRequestProperty("Accept", "application/json");
@@ -66,68 +149,6 @@ public class App {
   		
   		conn.disconnect();
 
-  		
-  		
-  		//
-  		
-
-
-		System.out.println(jsonResult+"\n");
-		
-		
-		
-  		Gson gson = new Gson();
-		
-		//get json object from the json string
-		JsonObject coderollsJsonObject = gson.fromJson(jsonResult, JsonObject.class);
-  		
-		String name = coderollsJsonObject.get("method").getAsString();
-		System.out.println("result: "+name+"\n");
-		
-		
-
-		JsonObject result = coderollsJsonObject.getAsJsonObject("result");
-		String instrument_name = result.get("instrument_name").getAsString(); 
-		
-		System.out.println(">Instrument_name: "+instrument_name+"\n");
-		
-		
-		//
-		JsonObject data = result.getAsJsonObject("data");
-		
-		System.out.println(data.size());
-		
-		  // Map<String, Object> attributes = new HashMap<String, Object>();
-		   Set<Entry<String, JsonElement>> entrySet = data.entrySet();
-		   
-		   for(Map.Entry<String,JsonElement> entry : entrySet){
-		        //  attributes.put(entry.getKey(), data.get(entry.getKey()));
-			  // System.out.println(entry.getKey() +"---- "+ data.get(entry.getKey()) );
-			   System.out.println(entry.getKey() +"---- "+ entry.getValue() );
-		   }
-		/*
-
-		{
-			"code":0,
-			"method":"public/get-ticker",
-			"result":
-				{
-					"instrument_name":"BTC_USDT",
-					"data":{"i":"BTC_USDT",
-						"b":42100.00,
-						"k":42170.00,
-						"a":42170.00,
-						"t":1648036727461,
-						"v":361.285052,
-						"h":666887.23,
-						"l":10483.32,
-						"c":-651.00}
-				}
-			
-		}
-		*/
-
-		
 		
 		
   	  } catch (MalformedURLException e) {
@@ -139,9 +160,113 @@ public class App {
   		e.printStackTrace();
 
   	  }
+
+    	return jsonResult;
+    	
     }
     
     
     
     
+    
+    /**
+     * 
+     * */
+    
+    public CandleStick jsonObjectFactory(String method, String jsonString) {
+    	
+    	CandleStick candleStick = new CandleStick();
+    	JsonObject dataObj;
+		 long tUnixTimestamp ;
+		 float open;
+		 float high ;
+		 float low ;
+		 float close;
+		 float volume ;
+    	
+    	if (ParamAPIMethod.CandleStick.equals(method)){
+    		
+    		System.out.println("*** Generating CandleStick object");
+    		
+    		
+    		Gson gson = new Gson();
+    		
+    		//get json object from the json string
+    		JsonObject csJsonObject = gson.fromJson(jsonString, JsonObject.class);
+    
+    			candleStick.setMethod(csJsonObject.get("method").getAsString());
+    		//System.out.println("result: "+candleStick.getMethod()+"\n");
+    		
+    		
+
+    		JsonObject result = csJsonObject.getAsJsonObject("result");
+    		
+    		candleStick.setInstrumentName(result.get("instrument_name").getAsString());;
+    		System.out.println("candleStick.getInstrumentName(): "+candleStick.getInstrumentName()+"\n");
+    		
+    		candleStick.setInstrumentName(result.get("interval").getAsString());;
+    		System.out.println("candleStick.getInstrumentName(): "+candleStick.getInstrumentName()+"\n");
+    		
+    		
+    		JsonArray dataArray = result.getAsJsonArray("data");
+    		
+    		
+    		Vector<Data> dataSet= new Vector<>();
+    		
+    		for (JsonElement d : dataArray) {
+    			
+    		    dataObj = d.getAsJsonObject();
+    			tUnixTimestamp = dataObj.get("t").getAsLong();
+    			open = dataObj.get("o").getAsFloat();
+    			high = dataObj.get("h").getAsFloat();
+    			low = dataObj.get("l").getAsFloat();
+    			close = dataObj.get("c").getAsFloat();
+    			volume = dataObj.get("v").getAsFloat();
+    			 
+    			 System.out.println(
+    					  tUnixTimestamp + " @ " +
+    	    			  open + " @ " +
+    	    			  high+ " @ " +
+    	    			  low + " @ " +
+    	    			  close + " @ " +
+    	    			  volume + " @ " 
+    			 );
+    			 
+    			
+    			Data data = new Data();
+    			
+    			data.settUnixTimestamp(tUnixTimestamp);
+    			data.setOpen(open);
+    			data.setHigh(high);
+    			data.setLow(low);
+    			data.setClose(close);
+    			data.setVolume(volume);
+    			
+    			dataSet.add(data);
+    		}
+    			
+    		candleStick.setDataSet(dataSet);
+    		
+    		
+    		System.out.println("candleStick.getDataSet().get(0).gettUnixTimestamp: "+candleStick.getDataSet().get(0).gettUnixTimestamp());
+    		/*
+    		System.out.println("@@ size: "+data.size());
+    		
+    		  // Map<String, Object> attributes = new HashMap<String, Object>();
+    		   Set<Entry<String, JsonElement>> entrySet = data.entrySet();
+    		   
+    		   for(Map.Entry<String,JsonElement> entry : entrySet){
+    		        //  attributes.put(entry.getKey(), data.get(entry.getKey()));
+    			  // System.out.println(entry.getKey() +"---- "+ data.get(entry.getKey()) );
+    			   System.out.println(entry.getKey() +"---- "+ entry.getValue() );
+    		   }
+    	   */
+    		
+    	}
+  		
+    	
+    	
+    	return candleStick;
+    }
+ 
 }

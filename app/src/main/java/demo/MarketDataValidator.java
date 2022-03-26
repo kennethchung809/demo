@@ -51,9 +51,11 @@ public class MarketDataValidator {
 
 		MarketDataValidator marketDataValidator = new MarketDataValidator();
 
-						// retrieve the CandleStick JsonString object by instrument, period
-						jsonString = marketDataValidator.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.CandleStick, ParamPeriod.OneMinutes);
-				
+		System.out.println("Downloading the CandleStick JSON ");
+		
+		// retrieve the CandleStick JsonString object by instrument, period
+		jsonString = marketDataValidator.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.CandleStick, ParamPeriod.OneMinutes);
+
 								// Ignore: CandleStick JSON temporarily for testing short period of time, if necessary
 								/*
 								jsonString = "    	{\"code\":0,\n" + "    		\"method\":\"public/get-candlestick\",\n"
@@ -68,7 +70,7 @@ public class MarketDataValidator {
 								*/
 		
 							  // System.out.println(" jsonString result: "+jsonString);
-
+		
 		// Create the CandleStick java object from the JsonString
 		CandleStick candleStick = marketDataValidator.jsonObjectFactoryCS(ParamAPIMethod.CandleStick, jsonString);
 
@@ -77,6 +79,7 @@ public class MarketDataValidator {
 		System.out.println( 	"#####################################################################################################################################################");
 		System.out.println(   	"#####################################################################################################################################################");
 
+		System.out.println("Downloading the Trade JSON ");
 		
 		// retrieve the Trade JsonString object by instrument
 		jsonString = marketDataValidator.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.Trades);

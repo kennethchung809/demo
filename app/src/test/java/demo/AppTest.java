@@ -3,12 +3,70 @@
  */
 package demo;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Vector;
+
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import demo.param.ParamAPIMethod;
+import demo.param.ParamInstrument;
+import jsonObject.DataTrade;
+import jsonObject.Trade;
 
 class AppTest {
-    @Test void appHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+    @Test void TradeAPI_return_validate() {
+    	DataTrade dataTrade ;
+    	
+        MarketDataValidator classUnderTest = new MarketDataValidator();
+        String 	jsonString = classUnderTest.getJsonObjectString(ParamInstrument.BTC_USDT, ParamAPIMethod.Trades);
+       
+        // create problem json to check the trades
+        /*
+    	jsonString=" \n 	{"
+    			+ "\n"
+    			+ "    		\"code\":0,\n"
+    			+ "    		\"method\":\"public/get-trades\",\n"
+    			+ "    		\"result\":{\n"
+    			+ "    			\"instrument_name\":\"BTC_USDT\",\n"
+    			+ "    			\"data\":[\n"
+    			+ "	    			        {\"dataTime\":1648155600,\"d\":2360792450652095328,\"s\":\"BUY\",\"p\":44058.31,\"q\":0.014922,\"t\":1648193897704,\"i\":\"BTC_USDT\"},\n"
+    			
+    			+ "	    			        {\"dataTime\":1648155660,\"d\":2360792397607909120,\"s\":\"SELL\",\"p\":44058.32,\"q\":0.002669,\"t\":1648193896123,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648155661,\"d\":2360792397607909120,\"s\":\"BUY\",\"p\":44059.32,\"q\":0.002669,\"t\":1648193896123,\"i\":\"BTC_USDT\"},\n"
+    			
+    			+ "	    			        {\"dataTime\":1648155720,\"d\":2360792397607695552,\"s\":\"SELL\",\"p\":44058.32,\"q\":0.005339,\"t\":1648193896123,\"i\":\"BTC_USDT\"},\n"
+    			+ "	    			        {\"dataTime\":1648155780,\"d\":2360792076676092352,\"s\":\"BUY\",\"p\":44059.32,\"q\":0.001334,\"t\":1648193886559,\"i\":\"BTC_USDT\"}\n"
+    			+ "    			       ]\n"
+    			+ "    	        }\n"
+    			+ "    	}\n"
+    			+ "";
+    	
+    	*/
+    	
+        // Check whether the trade JSON string can create the Trade object
+        assertNotNull(classUnderTest.jsonObjectFactoryTrade(ParamAPIMethod.Trades, jsonString), "API should return JSON data");
+        
+    	Trade trade = classUnderTest.jsonObjectFactoryTrade(ParamAPIMethod.Trades, jsonString);
+    	
+    	
+    	//System.out.println("####: jsonString:"+jsonString);
+    	
+    	Vector vTrade = trade.getDataSet();
+    	
+    	  // Loop all the trade data and check any empty value from the JSON stream
+    	  for (int j = 0; j < vTrade.size(); j++) {
+         	 dataTrade = (DataTrade) vTrade.get(j);
+         	 
+         	assertNotEquals("", dataTrade.getsSide());
+        	assertNotEquals("", Float.toString(dataTrade.getpTradePrice()).trim());
+        	assertNotEquals("", Float.toString(dataTrade.getqTradeQty()).trim());
+           	assertNotEquals("", Float.toString(dataTrade.getdTradeID()).trim());
+        	assertNotEquals("", Float.toString(dataTrade.getDateTime()).trim());
+     	 
+    	  } 
+        
+        
     }
 }

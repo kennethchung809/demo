@@ -5,8 +5,23 @@ public class DataTrade {
 	 float pTradePrice;
 	 float qTradeQty;
 	 String sSide;
-	 float dTradeID;
-	 float tTradeTimeStamp;
+	 long dTradeID;
+	 long  tTradeTimeStamp;
+	 long dateTime;
+	 long tmp;
+	 
+	public long getTmp() {
+		return tmp;
+	}
+	public void setTmp(long tmp) {
+		this.tmp = tmp;
+	}
+	public long getDateTime() {
+		return dateTime;
+	}
+	public void setDateTime(long dateTime) {
+		this.dateTime = dateTime;
+	}
 	public float getpTradePrice() {
 		return pTradePrice;
 	}
@@ -25,16 +40,17 @@ public class DataTrade {
 	public void setsSide(String sSide) {
 		this.sSide = sSide;
 	}
-	public float getdTradeID() {
+	public long getdTradeID() {
 		return dTradeID;
 	}
-	public void setdTradeID(float dTradeID) {
+	public void setdTradeID(long dTradeID) {
 		this.dTradeID = dTradeID;
 	}
-	public float gettTradeTimeStamp() {
+	
+	public long gettTradeTimeStamp() {
 		return tTradeTimeStamp;
 	}
-	public void settTradeTimeStamp(float tTradeTimeStamp) {
+	public void settTradeTimeStamp(long tTradeTimeStamp) {
 		this.tTradeTimeStamp = tTradeTimeStamp;
 	}
 	

@@ -8,14 +8,7 @@ public class DataTrade {
 	 long dTradeID;
 	 long  tTradeTimeStamp;
 	 long dateTime;
-	 long tmp;
 	 
-	public long getTmp() {
-		return tmp;
-	}
-	public void setTmp(long tmp) {
-		this.tmp = tmp;
-	}
 	public long getDateTime() {
 		return dateTime;
 	}

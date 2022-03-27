@@ -76,8 +76,8 @@ public class MarketDataValidator {
 
 		// System.out.println("candleStick: "+candleStick);
 
-		System.out.println( 	"#####################################################################################################################################################");
-		System.out.println(   	"#####################################################################################################################################################");
+		System.out.println("#################################################################################");
+		System.out.println("#################################################################################");
 
 		System.out.println("Downloading the Trade JSON ");
 		
@@ -105,14 +105,14 @@ public class MarketDataValidator {
 		// Create the Trade java object from the JsonString
 		Trade trade = marketDataValidator.jsonObjectFactoryTrade(ParamAPIMethod.Trades, jsonString);
 
-		System.out.println(	"#####################################################################################################################################################");
-		System.out.println(	"#####################################################################################################################################################");
+		System.out.println("#################################################################################");
+		System.out.println("#################################################################################");
 
 		// Pass in the trade and candleStick objects to this method and return the problem Trade ID
 		Vector vFailedTradeIDList = marketDataValidator.validateTradePass(trade, candleStick);
 
-		System.out.println("#####################################################################################################################################################");
-		System.out.println("#####################################################################################################################################################");
+		System.out.println("#################################################################################");
+		System.out.println("#################################################################################");
 
 		for (int i = 0; i < vFailedTradeIDList.size(); i++) {
 			System.out.println("Failed trades ID:" + vFailedTradeIDList.get(i));
@@ -373,6 +373,7 @@ public class MarketDataValidator {
 	public Vector validateTradePass(Trade trade, CandleStick candleStick) {
 
 		boolean firstTradePass = true;
+		Vector vFailedTradeID = new Vector();
 		Vector vtmpTradeID = new Vector();
 		final float THRESHOLD = .0001f;
 		int count = 0;
@@ -462,9 +463,16 @@ public class MarketDataValidator {
 					}
 				}
 			}
+			
+			// trades loop Finish, in the period of two CandleSticks
 
 			
-			if (count >= 2) {
+			if (count == 1 && !firstTradePass) {		//If only exist one trade
+				
+				vFailedTradeID.addAll(vtmpTradeID);		//Add the single failed trade into final result
+				
+				
+			}else if (count >= 2) {     				// if exist more than one trade
 
 				System.out.println("CandleStick 1:      " + " dCStick1.getOpen(): " + dCStick1.getOpen()
 						+ " dCStick1.getClose(): " + dCStick1.getClose() + " dCStick1.getHigh(): " + dCStick1.getHigh()
@@ -479,23 +487,22 @@ public class MarketDataValidator {
 						&& Math.abs(dCStick1.getLow() - lastTradeL) < THRESHOLD
 
 				) {
-					// do nothing
+					// do nothing, since it matchs the creteria 2
 				} else {
 					System.out.println("** Trade more than 2,  failed in this period ");
 					
 					//Get distinct TradeID
-					LinkedHashSet<Integer> hashSet = new LinkedHashSet<Integer>(vtmpTradeID);
-					vtmpTradeID.clear();
-					vtmpTradeID.addAll(hashSet);
+					LinkedHashSet<Integer> hashSet = new LinkedHashSet<Integer>(vtmpTradeID);							
+					vFailedTradeID.addAll(hashSet);			//Add the failed trade records into final result
 
 				}
 			}
-			// reset counter
-			count = 0;
-
+			
+			count = 0;						// reset counter
+			vtmpTradeID.clear();			//Clear the temp records
 		}
 
-		return vtmpTradeID;
+		return vFailedTradeID;
 	}
 }
 
